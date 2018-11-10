@@ -7,7 +7,7 @@ Controles derivados de TCustomEdit especializados na entrada de dados:
 
 ## Versão
 
-2018 - v1.0.0 (Alpha)
+v1.0.0 (Alpha)
 
 ## Autor
 
@@ -33,3 +33,8 @@ Embarcadero Delphi xe5
 ## Licença
 
 Este projeto é licenciado sob a MIT License - veja LICENSE.md para mais detalhes
+
+## Histórico
+
+2018
+v1.0.0 - Criação e disponibilização do código fonte.
