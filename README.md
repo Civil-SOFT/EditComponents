@@ -1,9 +1,9 @@
 # EditComponents
 
 Controles derivados de TCustomEdit especializados na entrada de dados:
-* TCNPJEdit;
-* TCPFEdit;
-* TTelefoneEdit.
+* Cadastro Nacional de Pessoa Jurídica (CNPJ): TCNPJEdit;
+* Cadastro de Pessoa Física (CPF): TCPFEdit;
+* Número de Telefone: TTelefoneEdit.
 
 ## Versão
 
