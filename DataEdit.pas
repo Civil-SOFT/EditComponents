@@ -45,8 +45,9 @@ type
 
   end; { IDataEdit }
 
-  TOnDataChange = procedure(Sender: TObject; const Data) of object;
-  TOnInvalidInputData = procedure(Sender: TObject; AData: AnsiString) of object;
+  TOnValueChange = procedure(Sender: TObject; const Data) of object;
+  TOnValueClear = procedure(Sender: TObject; const PrevData) of object;
+  TOnInvalidInputValue = procedure(Sender: TObject; AValue: AnsiString) of object;
 
 	TCustomDataEdit<_DataType; _Data: IDataEdit<_DataType>, constructor> = class(TCustomEdit)
   strict private
@@ -104,6 +105,7 @@ type
 
     procedure FormatText;
     function ChangeValue: Boolean;
+    procedure ClearValue;
 
     (*
      * Events.
@@ -113,16 +115,19 @@ type
   strict private
 
   	var
-    	FOnDataChange: TOnDataChange;
-    	FOnInvalidInputData: TOnInvalidInputData;
+    	FOnValueChange: TOnValueChange;
+      FOnValueClear: TOnValueClear;
+    	FOnInvalidInputValue: TOnInvalidInputValue;
 
   protected
 
-  	property OnDataChange: TOnDataChange read FOnDataChange write FOnDataChange;
-    property OnInvalidInputData: TOnInvalidInputData read FOnInvalidInputData write FOnInvalidInputData;
+  	property OnValueChange: TOnValueChange read FOnValueChange write FOnValueChange;
+    property OnValueClear: TOnValueClear read FOnValueClear write FOnValueClear;
+    property OnInvalidInputValue: TOnInvalidInputValue read FOnInvalidInputValue write FOnInvalidInputValue;
 
-  	procedure DoInvalidInputData(AData: AnsiString); dynamic;
-    procedure DoDataChange(AData: _DataType); dynamic;
+    procedure DoValueChange(AValue: _DataType); dynamic;
+    procedure DoValueClear(AOldValue: _DataType); dynamic;
+  	procedure DoInvalidInputValue(AValue: AnsiString); dynamic;
 
   end; { TCustomDataEdit }
 
@@ -157,13 +162,18 @@ begin
     begin
     	FValidateExit := False;
       SetFocus;
-      DoInvalidInputData(str);
+      DoInvalidInputValue(str);
     end
     else
     begin
 			ChangeValue;
       FormatText;
     end;
+  end
+  else
+  begin
+  	ClearValue;
+    FValidateExit := False;
   end;
 
 	inherited;
@@ -346,7 +356,8 @@ begin
     	FCursorPos := 0
     else if FCursorPos > intComp then
     	FCursorPos := intComp;
-      SetSel(FCursorPos, FCursorPos + 1);
+
+    SetSel(FCursorPos, FCursorPos + 1);
   end;
 end;
 
@@ -437,21 +448,36 @@ begin
   begin
     FValue := FData.ConvertToData(str);
     Modified := False;
-    DoDataChange(FValue);
+    DoValueChange(FValue);
     Result := True;
   end;
 end;
 
-procedure TCustomDataEdit<_DataType, _Data>.DoDataChange(AData: _DataType);
+procedure TCustomDataEdit<_DataType, _Data>.ClearValue;
+var
+	_value: _DataType;
 begin
-	if Assigned(FOnDataChange) then
-  	FOnDataChange(Self, AData);
+	_value := Fvalue;
+	FValue := FData.NullValue;
+  DoValueClear(_value);
 end;
 
-procedure TCustomDataEdit<_DataType, _Data>.DoInvalidInputData(AData: AnsiString);
+procedure TCustomDataEdit<_DataType, _Data>.DoValueChange(AValue: _DataType);
 begin
-	if Assigned(FOnInvalidInputData) then
-  	FOnInvalidInputData(Self, AData);
+	if Assigned(FOnValueChange) then
+  	FOnValueChange(Self, AValue);
+end;
+
+procedure TCustomDataEdit<_DataType, _Data>.DoValueClear(AOldValue: _DataType);
+begin
+	if Assigned(FOnValueClear) then
+  	FOnValueClear(Self, AOldValue);
+end;
+
+procedure TCustomDataEdit<_DataType, _Data>.DoInvalidInputValue(AValue: AnsiString);
+begin
+	if Assigned(FOnInvalidInputValue) then
+  	FOnInvalidInputValue(Self, AValue);
 end;
 
 end.

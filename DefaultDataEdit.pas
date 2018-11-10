@@ -43,8 +43,9 @@ type
 
   	property UseDataFormat;
 
-    property OnDataChange;
-    property OnInvalidInputData;
+    property OnValueChange;
+    property OnValueClear;
+    property OnInvalidInputValue;
 
   end; { TCNPJEdit }
 
