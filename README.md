@@ -1,6 +1,9 @@
 # EditComponents
 
-Controles derivados de TCustomEdit especializados na entrada de dados: CNPJ, CPF, Telefone.
+Controles derivados de TCustomEdit especializados na entrada de dados:
+* TCNPJEdit;
+* TCPFEdit;
+* TTelefoneEdit.
 
 ## Versão
 
